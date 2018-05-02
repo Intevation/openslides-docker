@@ -132,6 +132,16 @@ services:
       - REMOTE_PASS=openslides
     networks:
       - back
+  postfix:
+    image: catatnight/postfix
+    restart: always
+    environment:
+      - maildomain=localhost 
+      - smtp_user=openslides:openslides
+    ports:
+      - "25:25"
+    networks:
+      - back
 volumes:
   dbdata:
   staticfiles:
