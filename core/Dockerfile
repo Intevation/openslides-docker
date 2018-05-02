@@ -81,4 +81,4 @@ EMAIL_HOST_USER = 'openslides'\
 " >> personal_data/var/settings.py
 RUN echo "\
 EMAIL_HOST_PASSWORD = 'openslides'\
-" >> personal_data/var/settings.p
+" >> personal_data/var/settings.py

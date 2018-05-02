@@ -5,10 +5,10 @@ services:
       context: ./core
       args:
         # Change according to your details
-        REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
-        BRANCH: master
-        COMMIT_SHA: 03b17837ed2c88692f1b99ec5b9b477f86fdddb6
-    image: openslides
+        REPOSITORY_URL: https://github.com/intevation/OpenSlides.git
+        BRANCH: dgb
+        COMMIT_SHA: a93bcc17691962060e1814744067cd41ee510609
+    image: openslides-dgb
     command: bash -c "rm -rf /app/personal_data/var/static && rm -rf /app/personal_data/var/collected-static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:
       - postgres
@@ -29,9 +29,10 @@ services:
       - 8000
     environment:
       # Change according to your details
-      VIRTUAL_HOST: 'localhost'
-      LETSENCRYPT_HOST: 'localhost'
-      LETSENCRYPT_EMAIL: 'localhost'
+      VIRTUAL_HOST: 'openslides-dgb3.intevation.de'
+      LETSENCRYPT_HOST: 'openslides-dgb3.intevation.de'
+      LETSENCRYPT_EMAIL: 'admin@intevation.de'
+      LETSENCRYPT_TEST: 'true'
     volumes:
       - "staticfiles:/app/personal_data"
     networks:
@@ -39,6 +40,8 @@ services:
   redis:
     image: redis:alpine
     restart: always
+    volumes:
+      - "redisdata:/data"
     networks:
       - back
   worker:
@@ -112,8 +115,8 @@ services:
       - "dbdata:/var/lib/postgresql"
     environment:
       - REPLICATION_MODE=slave
-      - REPLICATION_SSLMODE=prefer
-      - REPLICATION_HOST=127.0.0.1
+      - REPLICATION_SSLMODE=on
+      - REPLICATION_HOST=openslides-dgb3.intevation.de
       - REPLICATION_PORT=5432
       - REPLICATION_USER=repluser
       - REPLICATION_PASS=repluserpass
@@ -127,7 +130,7 @@ services:
       - "staticfiles:/app/static"
     environment:
       - REMOTE_MODE=MASTER
-      - REMOTE_HOST=localhost
+      - REMOTE_HOST=openslides-dgb3.intevation.de
       - REMOTE_USER=openslides
       - REMOTE_PASS=openslides
     networks:
@@ -136,13 +139,12 @@ services:
     image: catatnight/postfix
     restart: always
     environment:
-      - maildomain=localhost 
+      - maildomain=openslides-dgb3.intevation.de
       - smtp_user=openslides:openslides
-    ports:
-      - "25:25"
     networks:
       - back
 volumes:
+  redisdata:
   dbdata:
   staticfiles:
   certs:
