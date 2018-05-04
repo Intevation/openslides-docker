@@ -29,8 +29,8 @@ services:
       - 8000
     environment:
       # Change according to your details
-      VIRTUAL_HOST: 'openslides-dgb3.intevation.de'
-      LETSENCRYPT_HOST: 'openslides-dgb3.intevation.de'
+      VIRTUAL_HOST: 'bundeskongress.dgb-openslides.de'
+      LETSENCRYPT_HOST: 'bundeskongress.dgb-openslides.de'
       LETSENCRYPT_EMAIL: 'admin@intevation.de'
       LETSENCRYPT_TEST: 'true'
     volumes:
@@ -72,26 +72,26 @@ services:
       - "443:443"
     environment:
       - ENABLE_IPV6=true
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+        #    labels:
+        #      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     networks:
       - front
       - back
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    restart: always
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "certs:/etc/nginx/certs:rw"
-      - "nginx_vhost:/etc/nginx/vhost.d"
-      - "nginx_html:/usr/share/nginx/html"
-      - "nginx_conf:/etc/nginx/conf.d"
-    depends_on:
-      - nginx
-    environment:
-      NGINX_PROXY_CONTAINER: nginx
-    networks:
-      - back
+        #  letsencrypt:
+        #    image: jrcs/letsencrypt-nginx-proxy-companion
+        #    restart: always
+        #    volumes:
+        #      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        #      - "certs:/etc/nginx/certs:rw"
+        #      - "nginx_vhost:/etc/nginx/vhost.d"
+        #      - "nginx_html:/usr/share/nginx/html"
+        #      - "nginx_conf:/etc/nginx/conf.d"
+        #    depends_on:
+        #      - nginx
+        #    environment:
+        #      NGINX_PROXY_CONTAINER: nginx
+        #    networks:
+        #      - back
   postgres:
     image: sameersbn/postgresql:9.6-2
     restart: always
@@ -108,38 +108,38 @@ services:
     networks:
       - front
       - back
-  pg-slave:
-    image: sameersbn/postgresql:9.6-2
-    restart: always
-    volumes:
-      - "dbdata:/var/lib/postgresql"
-    environment:
-      - REPLICATION_MODE=slave
-      - REPLICATION_SSLMODE=on
-      - REPLICATION_HOST=openslides-dgb3.intevation.de
-      - REPLICATION_PORT=5432
-      - REPLICATION_USER=repluser
-      - REPLICATION_PASS=repluserpass
-    networks:
-      - back
-  filesync:
-    build: ./filesync
-    image: os-filesync
-    restart: always
-    volumes:
-      - "staticfiles:/app/static"
-    environment:
-      - REMOTE_MODE=MASTER
-      - REMOTE_HOST=openslides-dgb3.intevation.de
-      - REMOTE_USER=openslides
-      - REMOTE_PASS=openslides
-    networks:
-      - back
+        #  pg-slave:
+        #    image: sameersbn/postgresql:9.6-2
+        #    restart: always
+        #    volumes:
+        #      - "dbdata:/var/lib/postgresql"
+        #    environment:
+        #      - REPLICATION_MODE=slave
+        #      - REPLICATION_SSLMODE=on
+        #      - REPLICATION_HOST=bundeskongress.dgb-openslides.de
+        #      - REPLICATION_PORT=5432
+        #      - REPLICATION_USER=repluser
+        #      - REPLICATION_PASS=repluserpass
+        #    networks:
+        #      - back
+        #  filesync:
+        #    build: ./filesync
+        #    image: os-filesync
+        #    restart: always
+        #    volumes:
+        #      - "staticfiles:/app/static"
+        #    environment:
+        #      - REMOTE_MODE=MASTER
+        #      - REMOTE_HOST=bundeskongress.dgb-openslides.de
+        #      - REMOTE_USER=openslides
+        #      - REMOTE_PASS=openslides
+        #    networks:
+        #      - back
   postfix:
     image: catatnight/postfix
     restart: always
     environment:
-      - maildomain=openslides-dgb3.intevation.de
+      - maildomain=bundeskongress.dgb-openslides.de
       - smtp_user=openslides:openslides
     networks:
       - back
