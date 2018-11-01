@@ -5,9 +5,9 @@ services:
       context: ./core
       args:
         # Change according to your details
-        REPOSITORY_URL: https://github.com/OpenSlides/OpenSlides.git
-        BRANCH: master
-        COMMIT_HASH: 123b7c702b44f1376853a0171f1f247088a24a88
+        REPOSITORY_URL: https://github.com/intevation/OpenSlides.git
+        BRANCH: laek
+        COMMIT_HASH: 35328127e4424cb22565764fcba9bd8d1acdc6ab
     image: os-core
     command: bash -c "rm -rf /app/personal_data/var/static && rm -rf /app/personal_data/var/collected-static && mkdir -p /app/personal_data/var/static && sleep 15 && python manage.py migrate && python manage.py collectstatic --noinput"
     depends_on:

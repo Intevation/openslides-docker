@@ -8,7 +8,7 @@ RUN mkdir /app
 
 RUN apt-get update && \
 	apt-get upgrade -y &&\
-	apt-get install -y libpq-dev supervisor curl vim
+	apt-get install -y libpq-dev supervisor curl vim zip
 RUN wget https://nodejs.org/dist/v10.5.0/node-v10.5.0-linux-x64.tar.xz -P /tmp
 RUN cd /tmp && tar xfvJ node-v10.5.0-linux-x64.tar.xz
 RUN ln -sf /tmp/node-v10.5.0-linux-x64/bin/node /usr/bin/node
@@ -27,6 +27,15 @@ RUN rm -rf /var/lib/apt/lists/*
  
 USER openslides
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+
+RUN wget https://github.com/OpenSlides/openslides-voting/archive/master.zip && \
+    unzip master.zip && \
+    rm master.zip && \
+    cd openslides-voting-master && \
+    $HOME/.yarn/bin/yarn --non-interactive
+RUN cp -r openslides-voting-master/openslides_voting .
+RUN rm -r openslides-voting-master
+
 RUN $HOME/.yarn/bin/yarn --non-interactive
 
 RUN node_modules/.bin/gulp --production
@@ -83,3 +92,7 @@ EMAIL_HOST_USER = 'openslides'\
 RUN echo "\
 EMAIL_HOST_PASSWORD = 'openslides'\
 " >> personal_data/var/settings.py
+
+RUN echo "INSTALLED_APPS += ('openslides_voting',)\
+" >> personal_data/var/settings.py
+RUN ls -lA /app
